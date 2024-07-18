@@ -55,19 +55,121 @@ public class Program {
 		GameEngine.getInstance().startRace(competition);
 	}
 	public static void CreateGUI() {
-		JFrame frame = new JFrame("Competition");
-		frame.setSize(1000, 700);
-
-		JLabel SnowSurface_label = new JLabel("Snow Surface");
-		SnowSurface_label.setSize(80, 80);
-		frame.add(SnowSurface_label);
-		GridLayout myGrid = new GridLayout(3,2);
-		frame.setLayout(myGrid);
-		frame.add(new JComboBox<SnowSurface>(SnowSurface.values()));
-		final JLabel label = new JLabel("Make Competition");
+		// Create the frame
+		JFrame frame = new JFrame("Arena Builder");
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.getContentPane().add(label);
-		//frame.pack();
+		frame.setSize(600, 600);
+
+		// Create the main layout
+		JPanel mainPanel = new JPanel(new BorderLayout());
+		mainPanel.setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
+
+		// Right Panel for controls
+		JPanel rightPanel = new JPanel();
+		rightPanel.setLayout(new BoxLayout(rightPanel, BoxLayout.Y_AXIS));
+		rightPanel.setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
+
+		// Build Arena section
+		JLabel buildArenaTitle = new JLabel("Build Arena");
+		JTextField arenaLengthTextBox = new JTextField();
+		arenaLengthTextBox.setToolTipText("Enter arena length");
+		JComboBox<String> snowSurfaceChoiceBox = new JComboBox<>(new String[]{"POWDER", "CRUD", "ICE"});
+		JComboBox<String> weatherConditionChoiceBox = new JComboBox<>(new String[]{"SUNNY", "CLOUDY", "STORMY"});
+		JButton buildArenaButton = new JButton("Build Arena");
+
+		JPanel buildArenaPanel = new JPanel(new GridLayout(4, 2, 10, 10));
+		buildArenaPanel.add(new JLabel("Arena Length:"));
+		buildArenaPanel.add(arenaLengthTextBox);
+		buildArenaPanel.add(new JLabel("Snow Surface:"));
+		buildArenaPanel.add(snowSurfaceChoiceBox);
+		buildArenaPanel.add(new JLabel("Weather Condition:"));
+		buildArenaPanel.add(weatherConditionChoiceBox);
+		buildArenaPanel.add(new JPanel()); // Empty cell
+		buildArenaPanel.add(buildArenaButton);
+
+		// Create Competition section
+		JLabel createCompetitionTitle = new JLabel("Create Competition");
+		JComboBox<String> chooseCompetitionChoiceBox = new JComboBox<>(new String[]{"Ski", "Snowboard"});
+		JTextField maxCompetitorsTextBox = new JTextField();
+		maxCompetitorsTextBox.setToolTipText("Max competitors number");
+		JComboBox<String> disciplineChoiceBox = new JComboBox<>(new String[]{"SLALOM", "GIANT_SLALOM", "DOWNHILL", "FREESTYLE"});
+		JComboBox<String> leagueChoiceBox = new JComboBox<>(new String[]{"JUNIOR", "SENIOR"});
+
+		// Gender radio buttons
+		JLabel genderLabel = new JLabel("Gender:");
+		JRadioButton maleRadioButton = new JRadioButton("Male");
+		JRadioButton femaleRadioButton = new JRadioButton("Female");
+		ButtonGroup genderGroup = new ButtonGroup();
+		genderGroup.add(maleRadioButton);
+		genderGroup.add(femaleRadioButton);
+		JPanel genderPanel = new JPanel(new GridLayout(1, 3));
+		genderPanel.add(maleRadioButton);
+		genderPanel.add(femaleRadioButton);
+
+		JPanel createCompetitionPanel = new JPanel(new GridLayout(5, 2, 10, 10));
+		createCompetitionPanel.add(new JLabel("Choose Competition:"));
+		createCompetitionPanel.add(chooseCompetitionChoiceBox);
+		createCompetitionPanel.add(new JLabel("Max Competitors:"));
+		createCompetitionPanel.add(maxCompetitorsTextBox);
+		createCompetitionPanel.add(new JLabel("Discipline:"));
+		createCompetitionPanel.add(disciplineChoiceBox);
+		createCompetitionPanel.add(new JLabel("League:"));
+		createCompetitionPanel.add(leagueChoiceBox);
+		createCompetitionPanel.add(genderLabel);
+		createCompetitionPanel.add(genderPanel);
+
+		// Add Competitor section
+		JLabel addCompetitorTitle = new JLabel("Add Competitor");
+		JTextField nameTextBox = new JTextField();
+		nameTextBox.setToolTipText("Enter name");
+		JTextField ageTextBox = new JTextField();
+		ageTextBox.setToolTipText("Enter age");
+		JTextField maxSpeedTextBox = new JTextField();
+		maxSpeedTextBox.setToolTipText("Enter max speed");
+		JTextField accelerationTextBox = new JTextField();
+		accelerationTextBox.setToolTipText("Enter acceleration");
+		JButton addCompetitorButton = new JButton("Add Competitor");
+
+		// Action Listener for Add Competitor button
+		addCompetitorButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				String name = nameTextBox.getText();
+				String age = ageTextBox.getText();
+				String maxSpeed = maxSpeedTextBox.getText();
+				String acceleration = accelerationTextBox.getText();
+
+				String message = "Name: " + name + "\nAge: " + age + "\nMax Speed: " + maxSpeed + "\nAcceleration: " + acceleration;
+				JOptionPane.showMessageDialog(frame, message, "Competitor Added", JOptionPane.INFORMATION_MESSAGE);
+			}
+		});
+
+
+		JPanel addCompetitorPanel = new JPanel(new GridLayout(5, 2, 10, 10));
+		addCompetitorPanel.add(new JLabel("Name:"));
+		addCompetitorPanel.add(nameTextBox);
+		addCompetitorPanel.add(new JLabel("Age:"));
+		addCompetitorPanel.add(ageTextBox);
+		addCompetitorPanel.add(new JLabel("Max Speed:"));
+		addCompetitorPanel.add(maxSpeedTextBox);
+		addCompetitorPanel.add(new JLabel("Acceleration:"));
+		addCompetitorPanel.add(accelerationTextBox);
+		addCompetitorPanel.add(new JPanel()); // Empty cell
+		addCompetitorPanel.add(addCompetitorButton);
+
+		// Add sections to right panel
+		rightPanel.add(buildArenaTitle);
+		rightPanel.add(buildArenaPanel);
+		rightPanel.add(createCompetitionTitle);
+		rightPanel.add(createCompetitionPanel);
+		rightPanel.add(addCompetitorTitle);
+		rightPanel.add(addCompetitorPanel);
+
+		// Add right panel to main panel
+		mainPanel.add(rightPanel, BorderLayout.EAST);
+
+		// Add main panel to frame
+		frame.add(mainPanel);
 		frame.setVisible(true);
 	}
 }
