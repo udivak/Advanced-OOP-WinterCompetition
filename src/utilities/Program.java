@@ -1,6 +1,5 @@
 package utilities;
 import game.GameEngine;
-import game.arena.IArena;
 import game.arena.WinterArena;
 import game.competition.Competition;
 import game.competition.SkiCompetition;
@@ -25,7 +24,6 @@ public class Program {
 	private static WinterArena arena;
 	public static void main(String[] args) {
 		CreateGUI();
-
 		Skier skier1 = new Skier("sk1",23, Gender.MALE, 4.5,60, Discipline.DOWNHILL);
 		Skier skier2 = new Skier("sk2",25, Gender.MALE, 5.0,50, Discipline.DOWNHILL);
 		Skier skier3 = new Skier("sk3",23, Gender.FEMALE, 3.5,45, Discipline.GIANT_SLALOM);
