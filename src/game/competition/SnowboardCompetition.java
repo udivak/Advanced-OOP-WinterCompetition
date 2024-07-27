@@ -1,9 +1,13 @@
 package game.competition;
 import game.arena.WinterArena;
+import game.entities.sportsman.IndependantWinterSportman;
 import game.entities.sportsman.Snowboarder;
+import game.entities.sportsman.WinterSportsman;
 import game.enums.Discipline;
 import game.enums.Gender;
 import game.enums.League;
+import java.util.Observable;
+
 /**
  * @author Ehud Vaknin 209479088, Moshe Bercovich 206676850
  * Class SkiCompetition - extends WinterCompetition to define a Snowboard competition
@@ -32,10 +36,21 @@ public class SnowboardCompetition extends WinterCompetition {
         }
         return false;
     }
+   @Override
+    public synchronized void update(Observable competitor, Object arg) {
+        try {
+            WinterSportsman comp = (WinterSportsman) ((IndependantWinterSportman) competitor).getCompetitor();
+            if (this.getArena().isFinished(comp)) {
+                this.getFinishedCompetitors().add(comp);
+                this.getActiveCompetitors().remove(comp);
+            }
+        } catch (ClassCastException e) { //////////////////////////
+            System.out.println(e.getMessage());
+        }
+    }
     public String toString() {
         return "SnowboardCompetition: " + super.toString();
     }
-
 }
 
 

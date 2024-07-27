@@ -2,11 +2,12 @@ package game.competition;
 import game.arena.IArena;
 import game.entities.sportsman.WinterSportsman;
 import java.util.ArrayList;
+import java.util.Observer;
 /**
  * @author Ehud Vaknin 209479088, Moshe Bercovich 206676850
  * Class Competition - abstract class to define a sport competition
  */
-public abstract class Competition {
+public abstract class Competition implements Observer {
     private IArena arena;
     private int maxCompetitors;
     private ArrayList<Competitor> activeCompetitors;
@@ -48,6 +49,9 @@ public abstract class Competition {
     }
     public boolean hasActiveCompetitor(){
         return !this.activeCompetitors.isEmpty();
+    }
+    public boolean hasFinishedCompetitor(){
+        return !this.finishedCompetitors.isEmpty();
     }
     public String toString() {
         StringBuilder output = new StringBuilder("Competition: (arena=" + this.arena.toString() +

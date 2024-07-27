@@ -14,9 +14,7 @@ import java.awt.event.*;
  * Main class(run demo)
  */
 public class Program {
-
 	public static void main(String[] args) {
-		CreateGUI();
 		Skier skier1 = new Skier("sk1",23, Gender.MALE, 4.5,60, Discipline.DOWNHILL);
 		Skier skier2 = new Skier("sk2",25, Gender.MALE, 5.0,50, Discipline.DOWNHILL);
 		Skier skier3 = new Skier("sk3",23, Gender.FEMALE, 3.5,45, Discipline.GIANT_SLALOM);
@@ -44,7 +42,9 @@ public class Program {
 			e.printStackTrace(System.out);
 		}
 		System.out.println("--------------- Exception example 3 ---------------");
+
 		competition.addCompetitor(skier4);
+
 		try{
 			competition.addCompetitor(skier5);
 		}
@@ -53,21 +53,7 @@ public class Program {
 		}
 		System.out.println("--------------- COMPETE ---------------");
 		GameEngine.getInstance().startRace(competition);
-	}
-	public static void CreateGUI() {
-		JFrame frame = new JFrame("Competition");
-		frame.setSize(1000, 700);
-
-		JLabel SnowSurface_label = new JLabel("Snow Surface");
-		SnowSurface_label.setSize(80, 80);
-		frame.add(SnowSurface_label);
-		GridLayout myGrid = new GridLayout(3,2);
-		frame.setLayout(myGrid);
-		frame.add(new JComboBox<SnowSurface>(SnowSurface.values()));
-		final JLabel label = new JLabel("Make Competition");
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.getContentPane().add(label);
-		//frame.pack();
-		frame.setVisible(true);
+		CompetitionGUI gui = new CompetitionGUI();
+		gui.setVisible(true);
 	}
 }

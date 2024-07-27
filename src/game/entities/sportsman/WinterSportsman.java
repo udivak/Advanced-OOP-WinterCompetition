@@ -30,6 +30,6 @@ public abstract class WinterSportsman extends Sportsman implements Competitor {
     }
     @Override
     public String toString() {
-        return "WinterSportsman: (discipline=" + discipline + ')' + super.toString();
+        return "WinterSportsman: (discipline = " + discipline + ") " + super.toString();
     }
 }

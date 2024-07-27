@@ -1,5 +1,6 @@
 package game.competition;
 import game.arena.WinterArena;
+import game.entities.sportsman.WinterSportsman;
 import game.enums.Discipline;
 import game.enums.Gender;
 import game.enums.League;
