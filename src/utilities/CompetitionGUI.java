@@ -434,8 +434,6 @@ public class CompetitionGUI extends JFrame implements Observer {
         if (iconCompetitors.size() == winterCompetition.getFinishedCompetitors().size()) {
             JOptionPane.showMessageDialog(null, "The Competition has finished.",
                                         "Competition Finished", JOptionPane.INFORMATION_MESSAGE);
-            //CompetitionGUI.this.competitionStatus = false;
-            //setEnabledButtons(false);
             setEnabledButtons(!CompetitionGUI.this.competitionStatus);
         }
     }
