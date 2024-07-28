@@ -6,16 +6,14 @@ import game.competition.WinterCompetition;
 import game.entities.sportsman.Skier;
 import game.entities.sportsman.Snowboarder;
 import game.enums.*;
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.*;
+
 /**
  * @author Itzhak Eretz Kdosha
  * Main class(run demo)
  */
 public class Program {
 	public static void main(String[] args) {
-		Skier skier1 = new Skier("sk1",23, Gender.MALE, 4.5,60, Discipline.DOWNHILL);
+		/*Skier skier1 = new Skier("sk1",23, Gender.MALE, 4.5,60, Discipline.DOWNHILL);
 		Skier skier2 = new Skier("sk2",25, Gender.MALE, 5.0,50, Discipline.DOWNHILL);
 		Skier skier3 = new Skier("sk3",23, Gender.FEMALE, 3.5,45, Discipline.GIANT_SLALOM);
 		Snowboarder jonsnowboarder = new Snowboarder("jon",25, Gender.FEMALE, 6.5,50, Discipline.DOWNHILL);
@@ -52,7 +50,7 @@ public class Program {
 			e.printStackTrace(System.out);
 		}
 		System.out.println("--------------- COMPETE ---------------");
-		GameEngine.getInstance().startRace(competition);
+		GameEngine.getInstance().startRace(competition);*/
 		CompetitionGUI gui = new CompetitionGUI();
 		gui.setVisible(true);
 	}
