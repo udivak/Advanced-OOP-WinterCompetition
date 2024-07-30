@@ -32,8 +32,12 @@ public class IndependantWinterSportman extends Observable implements Runnable {
     public synchronized void notifyObservers(Point location) {
         for (Observer observer : observers) {
             observer.update(this ,location);
-
         }
+       try {
+           Thread.sleep(30);
+       } catch (InterruptedException err) {
+           System.out.println(err.getMessage());
+       }
     }
     public void setObserver (Observer observer) { observers.add(observer); }
     public int getId() { return id; }

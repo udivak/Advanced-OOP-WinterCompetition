@@ -20,7 +20,6 @@ public class Skier extends WinterSportsman {
         }
         return false;
     }
-
     public String toString() {
         return "Skier: " + super.toString();
     }
