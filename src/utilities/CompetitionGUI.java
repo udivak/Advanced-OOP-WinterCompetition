@@ -14,7 +14,10 @@ import java.util.ArrayList;
 import java.util.Observable;
 import java.util.Observer;
 import java.util.Vector;
-
+/**
+ * @authors Ehud Vaknin 209479088, Moshe Bercovich 206676850
+ * Class CompetitionGUI - a class that handles the GUI and multi-threads program
+ */
 public class CompetitionGUI extends JFrame implements Observer {
     private final JLayeredPane imgContainer;      //Arena image
     private final JButton startCompetition_btn;

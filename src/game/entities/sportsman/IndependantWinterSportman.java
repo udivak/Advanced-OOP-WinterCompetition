@@ -5,7 +5,10 @@ import utilities.Point;
 import java.util.Observable;
 import java.util.Observer;
 import java.util.Vector;
-
+/**
+ * @authors Ehud Vaknin 209479088, Moshe Bercovich 206676850
+ * Class IndependantWinterSportman - a class that contains competitor and arena for code-reusability and running in thread
+ */
 public class IndependantWinterSportman extends Observable implements Runnable {
     private final IArena arena;
     private final WinterSportsman competitor;
