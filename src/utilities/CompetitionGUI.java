@@ -288,7 +288,6 @@ public class CompetitionGUI extends JFrame implements Observer {
                             IndependantWinterSportman iws = new IndependantWinterSportman(competitor, winterArena, IWSid++);
                             iws.setObserver(CompetitionGUI.this.winterCompetition);
                             iws.setObserver(CompetitionGUI.this);
-
                             Thread competitorThread = new Thread(iws);
                             competitorsVector.add(competitorThread);
                             winterCompetition.addCompetitor(competitor);
