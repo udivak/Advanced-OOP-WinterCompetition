@@ -26,6 +26,7 @@ public class CompetitionGUI extends JFrame implements Observer {
     private JButton createCompetition_btn;
     private JButton addCompetitor_btn;
     private JButton cloneCompetitor_btn;
+    private ArrayList<Competitor> competitors;
     private JFrame infoFrame;
     private WinterArena winterArena;
     private WinterCompetition winterCompetition;
@@ -42,6 +43,7 @@ public class CompetitionGUI extends JFrame implements Observer {
     public CompetitionGUI() {
         competitionStatus = false;
         setTitle("Competition");
+        competitors = new ArrayList<>();
         setSize(1000, 700);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         JPanel mainPanel = new JPanel(new BorderLayout());
@@ -126,7 +128,7 @@ public class CompetitionGUI extends JFrame implements Observer {
                     int arena_length = Integer.parseInt(arena_length_txtfield.getText());
                     if (arena_length < 700 || arena_length > 900)
                         JOptionPane.showMessageDialog(null, "Arena length must be between 700-900.",
-                                                "Error", JOptionPane.ERROR_MESSAGE);
+                                "Error", JOptionPane.ERROR_MESSAGE);
                     else {                                              //arena length is valid
                         updateMainFrameSize(1000, arena_length);
                         updateWeatherImage(selectedWeather);
@@ -134,7 +136,7 @@ public class CompetitionGUI extends JFrame implements Observer {
                         winterCompetition = null;
                         competitor = null;
                         JOptionPane.showMessageDialog(null, "Arena built Successfully.",
-                            "BUILD ARENA", JOptionPane.INFORMATION_MESSAGE);
+                                "BUILD ARENA", JOptionPane.INFORMATION_MESSAGE);
                     }
                 }
                 catch (IllegalArgumentException err) {
@@ -191,7 +193,7 @@ public class CompetitionGUI extends JFrame implements Observer {
                     int maxCompetitors = Integer.parseInt(max_competitors_txtfield.getText());
                     if (maxCompetitors < 1 || maxCompetitors > 20)
                         JOptionPane.showMessageDialog(null, "Max Competitors must be between 1-20.",
-                            "Error", JOptionPane.ERROR_MESSAGE);
+                                "Error", JOptionPane.ERROR_MESSAGE);
                     else {
                         iconCompetitors = new ArrayList<>();
                         if (maxCompetitors == 20)
@@ -217,7 +219,7 @@ public class CompetitionGUI extends JFrame implements Observer {
                             "Error", JOptionPane.ERROR_MESSAGE);
                 }
                 catch (ClassNotFoundException | InvocationTargetException | NoSuchMethodException |
-                         InstantiationException | IllegalAccessException ex) {
+                       InstantiationException | IllegalAccessException ex) {
                     JOptionPane.showMessageDialog(null, "An error has occurred while loading the class.",
                             "Error", JOptionPane.ERROR_MESSAGE);
                 }
@@ -238,7 +240,7 @@ public class CompetitionGUI extends JFrame implements Observer {
                 "/icons/" + competition_type_str + "Female.png";
         setCompetitorIcon(competitor_icon_path);
         JOptionPane.showMessageDialog(null, "Competitor added Successfully.",
-                                    "BUILD COMPETITION", JOptionPane.INFORMATION_MESSAGE);
+                "BUILD COMPETITION", JOptionPane.INFORMATION_MESSAGE);
     }
     private JPanel createAddCompetitorPanel() {
         JPanel mainPanel = new JPanel(new BorderLayout());
@@ -305,6 +307,7 @@ public class CompetitionGUI extends JFrame implements Observer {
                             ctor = cls.getConstructor(String.class, double.class, Gender.class, double.class, double.class, Discipline.class);
                             competitor = (WinterSportsman) ctor.newInstance(name_str, age, winterCompetition.getGender(),
                                     acceleration, maxSpeed, winterCompetition.getDiscipline());
+                            competitors.add(competitor);
                             (CompetitionGUI.this).addCompetitorIWS(competitor);
                         }
                     } catch (NumberFormatException err) {
@@ -322,9 +325,101 @@ public class CompetitionGUI extends JFrame implements Observer {
         });
         //Action Listener - Clone Competitor
         // create CloneFrame object for cloned competitor modifications
+        cloneCompetitor_btn.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                ArrayList<Object> output = user_choice_clone();
+                WinterSportsman cloned_competitor= (WinterSportsman) competitors.get((int)output.getFirst());
+                competitor = cloned_competitor.clone();
+                addCompetitorIWS(competitor);
+//              adding the set functions on the competitor
+            }
+        });
 
         return mainPanel;
     }
+    private ArrayList<Object> user_choice_clone() {
+        ArrayList<Object> output = new ArrayList<>(3);
+        output.add(null);
+        output.add(null);
+        output.add(null);
+        JDialog chooseCompetitorDialog = new JDialog(this, "Choose Competitor", true);
+        chooseCompetitorDialog.setLayout(new BorderLayout());
+        JPanel competitorPanel = new JPanel(new FlowLayout());
+        competitorPanel.setLayout(new GridLayout(competitors.size(), 1));
+//        JDialog all_competitors_panel = new JDialog(CompetitionGUI.this, "Choose Competitor", true);
+        for (int i = 0; i < competitors.size(); i++)
+//        create panel that contain all the competitors that exist so far so the user can choose which one to clone
+        {
+            Competitor comp = competitors.get(i);
+            System.out.println(comp);
+            // Create btn for each competitor
+            JButton competitor_btn = getjButton(i, output, chooseCompetitorDialog);
+
+            competitorPanel.add(competitor_btn);
+        }
+        JScrollPane scrollPane = new JScrollPane(competitorPanel);
+        chooseCompetitorDialog.add(scrollPane, BorderLayout.CENTER);
+        chooseCompetitorDialog.setSize(300, 300);
+        chooseCompetitorDialog.setVisible(true);
+        return output;
+    }
+
+    private JButton getjButton(int index, ArrayList<Object> output, JDialog chooseCompetitorDialog) {
+        JButton competitor_btn = new JButton("competitor No." + (index +1));
+
+        competitor_btn.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+//                    Here the handling with the user choice - the competitor we want to clone
+                //        Creating the dialog window from Gui
+                output.set(0, index);
+                System.out.println("checking...");
+//                chooseCompetitorDialog.dispose();
+                showCloningOptions(output);
+                chooseCompetitorDialog.dispose();
+            }
+        });
+        return competitor_btn;
+    }
+
+    private void showCloningOptions(ArrayList<Object> output) {
+        JDialog cloningOptionsDialog = new JDialog(this, "Clone Competitor Options", true);
+        cloningOptionsDialog.setLayout(new BorderLayout());
+
+        JPanel optionsPanel = new JPanel(new GridLayout(2, 2, 5, 5)); // Adjust grid layout
+        JTextField idTextField = new JTextField(10);
+        JColorChooser colorChooser = new JColorChooser();
+
+        optionsPanel.add(new JLabel("New Competitor ID:"));
+        optionsPanel.add(idTextField);
+        optionsPanel.add(new JLabel("Choose color:"));
+
+        // Create a panel for the color chooser to manage its size
+        JPanel colorPanel = new JPanel();
+        colorPanel.add(colorChooser);
+        optionsPanel.add(colorPanel);
+
+        JPanel buttonPanel = new JPanel(); // Panel for the button
+        JButton submitButton = new JButton("Submit");
+        submitButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                output.set(1, idTextField.getText()); // Set the new competitor ID
+                output.set(2, colorChooser.getColor()); // Set the new competitor color
+                cloningOptionsDialog.dispose(); // Close the dialog
+
+            }
+        });
+        buttonPanel.add(submitButton);
+
+        cloningOptionsDialog.add(optionsPanel, BorderLayout.CENTER); // Place options panel in the center
+        cloningOptionsDialog.add(buttonPanel, BorderLayout.SOUTH); // Place button panel at the bottom
+        cloningOptionsDialog.setSize(400, 300); // Adjust size to fit components
+        cloningOptionsDialog.setLocationRelativeTo(this); // Center the dialog
+        cloningOptionsDialog.setVisible(true);
+    }
+
     private void setShowInfoTable(JButton show_info_btn) {
         show_info_btn.addActionListener(new ActionListener() {
             @Override
@@ -448,7 +543,7 @@ public class CompetitionGUI extends JFrame implements Observer {
 
         if (iconCompetitors.size() == winterCompetition.getFinishedCompetitors().size()) {
             JOptionPane.showMessageDialog(null, "The Competition has finished.",
-                                        "Competition Finished", JOptionPane.INFORMATION_MESSAGE);
+                    "Competition Finished", JOptionPane.INFORMATION_MESSAGE);
             setEnabledButtons(!CompetitionGUI.this.competitionStatus);
         }
     }
@@ -475,8 +570,8 @@ public class CompetitionGUI extends JFrame implements Observer {
                 });
             }
         } catch (NullPointerException err) {
-                JOptionPane.showMessageDialog(null, "Please build Arena, Competition and add Competitors" +
-                        " to view info.", "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(null, "Please build Arena, Competition and add Competitors" +
+                    " to view info.", "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
     private void setEnabledButtons(boolean status) {
