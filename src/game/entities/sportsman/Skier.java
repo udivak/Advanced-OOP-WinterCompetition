@@ -20,6 +20,11 @@ public class Skier extends WinterSportsman {
         }
         return false;
     }
+    @Override
+    public Skier clone() {
+        return new Skier(this.getName(), this.getAge(), this.getGender(), this.getAcceleration(), this.getMaxSpeed(),
+                        this.getDiscipline());
+    }
     public String toString() {
         return "Skier: " + super.toString();
     }

@@ -25,6 +25,7 @@ public class CompetitionGUI extends JFrame implements Observer {
     private JButton buildArena_btn;
     private JButton createCompetition_btn;
     private JButton addCompetitor_btn;
+    private JButton cloneCompetitor_btn;
     private JFrame infoFrame;
     private WinterArena winterArena;
     private WinterCompetition winterCompetition;
@@ -224,6 +225,21 @@ public class CompetitionGUI extends JFrame implements Observer {
         });
         return mainPanel;
     }
+    private void addCompetitorIWS(WinterSportsman competitor) {
+        IndependantWinterSportman iws = new IndependantWinterSportman(competitor, winterArena, IWSid++);
+        iws.setObserver(CompetitionGUI.this.winterCompetition);
+        iws.setObserver(CompetitionGUI.this);
+
+        Thread competitorThread = new Thread(iws);
+        competitorsVector.add(competitorThread);
+        winterCompetition.addCompetitor(competitor);
+        String competitor_icon_path = "";
+        competitor_icon_path = winterCompetition.getGender() == Gender.MALE ? "/icons/" + competition_type_str + "Male.png" :
+                "/icons/" + competition_type_str + "Female.png";
+        setCompetitorIcon(competitor_icon_path);
+        JOptionPane.showMessageDialog(null, "Competitor added Successfully.",
+                                    "BUILD COMPETITION", JOptionPane.INFORMATION_MESSAGE);
+    }
     private JPanel createAddCompetitorPanel() {
         JPanel mainPanel = new JPanel(new BorderLayout());
         JPanel panel = new JPanel(new GridLayout(0, 2));
@@ -246,23 +262,27 @@ public class CompetitionGUI extends JFrame implements Observer {
         panel.add(acceleration_txtfield);
         mainPanel.add(panel, BorderLayout.CENTER);
 
+        JPanel addCompetitor_panel = new JPanel(new FlowLayout());
         this.addCompetitor_btn = new JButton("Add Competitor");
-        mainPanel.add(addCompetitor_btn, BorderLayout.SOUTH);
-        //Action Listener
+        this.cloneCompetitor_btn = new JButton("Clone Competitor");
+        //mainPanel.add(addCompetitor_btn, BorderLayout.SOUTH);
+        addCompetitor_panel.add(cloneCompetitor_btn);
+        addCompetitor_panel.add(addCompetitor_btn);
+        mainPanel.add(addCompetitor_panel, BorderLayout.SOUTH);
+        //Action Listener - Add Competitor
         addCompetitor_btn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (CompetitionGUI.this.competitionStatus)      //there is a finished competition - force user to create a new competition, then add competitors
                     JOptionPane.showMessageDialog(null, "Please rebuild Competition before adding Competitors.",
-                                            "Error", JOptionPane.ERROR_MESSAGE);
+                            "Error", JOptionPane.ERROR_MESSAGE);
                 else {
                     try {
                         if (winterArena == null || winterCompetition == null) {
                             JOptionPane.showMessageDialog(null, "Please build Arena, Competition before adding Competitors.",
-                                                    "Error", JOptionPane.ERROR_MESSAGE);
+                                    "Error", JOptionPane.ERROR_MESSAGE);
                             return;
                         }
-                        String competitor_icon_path = "";
                         String name_str = name_txtfield.getText();
                         int age = Integer.parseInt(age_txtfield.getText());
                         double maxSpeed = Double.parseDouble(max_speed_txtfield.getText());
@@ -285,18 +305,7 @@ public class CompetitionGUI extends JFrame implements Observer {
                             ctor = cls.getConstructor(String.class, double.class, Gender.class, double.class, double.class, Discipline.class);
                             competitor = (WinterSportsman) ctor.newInstance(name_str, age, winterCompetition.getGender(),
                                     acceleration, maxSpeed, winterCompetition.getDiscipline());
-                            IndependantWinterSportman iws = new IndependantWinterSportman(competitor, winterArena, IWSid++);
-                            iws.setObserver(CompetitionGUI.this.winterCompetition);
-                            iws.setObserver(CompetitionGUI.this);
-                            
-                            Thread competitorThread = new Thread(iws);
-                            competitorsVector.add(competitorThread);
-                            winterCompetition.addCompetitor(competitor);
-                            competitor_icon_path = winterCompetition.getGender() == Gender.MALE ? "/icons/" + competition_type_str + "Male.png" :
-                                    "/icons/" + competition_type_str + "Female.png";
-                            setCompetitorIcon(competitor_icon_path);
-                            JOptionPane.showMessageDialog(null, "Competitor added Successfully.",
-                                    "BUILD COMPETITION", JOptionPane.INFORMATION_MESSAGE);
+                            (CompetitionGUI.this).addCompetitorIWS(competitor);
                         }
                     } catch (NumberFormatException err) {
                         JOptionPane.showMessageDialog(null, "Age, Max Speed, Acceleration must be numbers.",
@@ -311,6 +320,9 @@ public class CompetitionGUI extends JFrame implements Observer {
                 }
             }
         });
+        //Action Listener - Clone Competitor
+        // create CloneFrame object for cloned competitor modifications
+
         return mainPanel;
     }
     private void setShowInfoTable(JButton show_info_btn) {

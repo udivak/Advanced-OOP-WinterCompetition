@@ -15,6 +15,7 @@ public abstract class WinterSportsman extends Sportsman implements Competitor {
         this.setAcceleration(this.getAcceleration() + League.calcAccelerationBonus(this.getAge()));
         this.discipline = discipline;
     }
+    public abstract WinterSportsman clone();
     public void setDiscipline(Discipline discipline) { this.discipline = discipline; }
     public Discipline getDiscipline() { return discipline; }
     @Override
