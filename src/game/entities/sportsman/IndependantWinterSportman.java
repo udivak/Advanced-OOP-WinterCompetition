@@ -2,6 +2,8 @@ package game.entities.sportsman;
 import game.arena.IArena;
 import game.competition.Competitor;
 import utilities.Point;
+
+import java.awt.*;
 import java.util.Observable;
 import java.util.Observer;
 import java.util.Vector;
@@ -14,11 +16,21 @@ public class IndependantWinterSportman extends Observable implements Runnable {
     private final WinterSportsman competitor;
     private final Vector<Observer> observers;
     private final int id;
+    private Color color;
+    private int idDisplay;
     public IndependantWinterSportman(WinterSportsman competitor, IArena arena, int id) {
         this.competitor = competitor;
         this.arena = arena;
         this.observers = new Vector<>();
         this.id = id;
+        this.color = null;
+    }
+    public IndependantWinterSportman(WinterSportsman competitor, IArena arena, int id, Color color) {
+        this.competitor = competitor;
+        this.arena = arena;
+        this.observers = new Vector<>();
+        this.id = id;
+        this.color = color;
     }
     public void run() {
         this.competitor.initRace();
@@ -43,11 +55,11 @@ public class IndependantWinterSportman extends Observable implements Runnable {
        }
     }
     public void setObserver (Observer observer) { observers.add(observer); }
-    public int getId() { return id; }
+    public Vector<Observer> getObservers() { return this.observers; }
+    public int getID() { return id; }
+    public void setColor(Color color) { this.color = color; }
     public String toString(){
         return "IWS - " + this.competitor.getName();
     }
-    public Competitor getCompetitor(){
-        return this.competitor;
-    }
+    public Competitor getCompetitor() { return this.competitor; }
 }

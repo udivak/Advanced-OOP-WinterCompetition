@@ -20,6 +20,7 @@ public abstract class Competition implements Observer {
     }
     public IArena getArena() { return this.arena; }
     public int getMaxCompetitors() { return this.maxCompetitors; }
+    public void setMaxCompetitors(int maxCompetitors) { this.maxCompetitors = maxCompetitors; }
     public ArrayList<Competitor> getActiveCompetitors() { return this.activeCompetitors; }
     public ArrayList<Competitor> getFinishedCompetitors() { return this.finishedCompetitors; }
     public abstract boolean isValidCompetitor(Competitor competitor);
@@ -47,12 +48,8 @@ public abstract class Competition implements Observer {
             }
         }
     }
-    public boolean hasActiveCompetitor(){
-        return !this.activeCompetitors.isEmpty();
-    }
-    public boolean hasFinishedCompetitor(){
-        return !this.finishedCompetitors.isEmpty();
-    }
+    public boolean hasActiveCompetitor(){ return !this.activeCompetitors.isEmpty(); }
+    public boolean hasFinishedCompetitor(){ return !this.finishedCompetitors.isEmpty(); }
     public String toString() {
         StringBuilder output = new StringBuilder("Competition: (arena=" + this.arena.toString() +
                 ", maxCompetitor=" + this.maxCompetitors + "\nactiveCompetitors="
@@ -64,5 +61,8 @@ public abstract class Competition implements Observer {
             output.append(comp.toString()).append("\n");
         return output.toString();
     }
+    public void setArena (IArena arena) { this.arena = arena; }
+    public void setActiveCompetitors(ArrayList<Competitor> activeCompetitors) { this.activeCompetitors = activeCompetitors; }
+    public void clearActiveCompetitors() { this.activeCompetitors.clear(); }
 }
 

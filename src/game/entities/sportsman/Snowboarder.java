@@ -6,8 +6,8 @@ import game.enums.Gender;
  * Class Snowboarder - extends Winter-Sportsman to define its base class as a Snowboarder
  */
 public class Snowboarder extends WinterSportsman {
-    public Snowboarder(String name, double age, Gender gender, double acceleration, double maxSpeed, Discipline discipline) {
-        super(maxSpeed, acceleration, name, age, gender, discipline);
+    public Snowboarder(String name, double age, Gender gender, double acceleration, double maxSpeed, Discipline discipline, int id) {
+        super(maxSpeed, acceleration, name, age, gender, discipline, id);
     }
     public boolean equals(Object other) {
         if (other instanceof Snowboarder) {
@@ -23,7 +23,7 @@ public class Snowboarder extends WinterSportsman {
     @Override
     public Snowboarder clone() {
         return new Snowboarder(this.getName(), this.getAge(), this.getGender(), this.getAcceleration(), this.getMaxSpeed(),
-                        this.getDiscipline());
+                        this.getDiscipline(), this.id);
     }
     public String toString() {
         return "Snowboarder: " + super.toString();

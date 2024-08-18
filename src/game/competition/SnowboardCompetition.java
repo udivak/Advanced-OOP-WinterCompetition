@@ -13,8 +13,7 @@ import java.util.Observable;
  * Class SkiCompetition - extends WinterCompetition to define a Snowboard competition
  */
 public class SnowboardCompetition extends WinterCompetition {
-    public SnowboardCompetition(WinterArena arena, int maxCompetitors, Discipline discipline,
-                          League league, Gender gender){
+    public SnowboardCompetition(WinterArena arena, int maxCompetitors, Discipline discipline, League league, Gender gender){
         super(arena, maxCompetitors, discipline, league, gender);
     }
     @Override

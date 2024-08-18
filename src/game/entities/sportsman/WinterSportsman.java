@@ -9,11 +9,13 @@ import game.enums.Gender;
  */
 public abstract class WinterSportsman extends Sportsman implements Competitor {
     Discipline discipline;
+    int id;
     public WinterSportsman(double maxSpeed, double acceleration, String name, double age, Gender
-                           gender, Discipline discipline) {
+                           gender, Discipline discipline, int id) {
         super(maxSpeed, acceleration, name, age, gender);
         this.setAcceleration(this.getAcceleration() + League.calcAccelerationBonus(this.getAge()));
         this.discipline = discipline;
+        this.id = id;
     }
     public abstract WinterSportsman clone();
     public void setDiscipline(Discipline discipline) { this.discipline = discipline; }
@@ -29,6 +31,8 @@ public abstract class WinterSportsman extends Sportsman implements Competitor {
         this.setSpeed(new_speed);
         this.getLocation().setX(this.getLocation().getX() + new_speed);
     }
+    public int getID() { return id; }
+    public void setID(int id) { this.id = id; }
     @Override
     public String toString() {
         return "WinterSportsman: (discipline = " + discipline + ") " + super.toString();

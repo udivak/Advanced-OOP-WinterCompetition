@@ -1,4 +1,5 @@
 package game.competition;
+import game.arena.IArena;
 import game.arena.WinterArena;
 import game.entities.sportsman.IndependantWinterSportman;
 import game.entities.sportsman.Skier;
@@ -13,8 +14,7 @@ import java.util.Observable;
  * Class SkiCompetition - extends WinterCompetition to define a Ski competition
  */
 public class SkiCompetition extends WinterCompetition {
-    public SkiCompetition(WinterArena arena, int maxCompetitors, Discipline discipline,
-                          League league, Gender gender) {
+    public SkiCompetition(WinterArena arena, int maxCompetitors, Discipline discipline, League league, Gender gender) {
         super(arena, maxCompetitors, discipline, league, gender);
     }
     @Override
