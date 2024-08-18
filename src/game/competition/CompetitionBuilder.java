@@ -19,18 +19,10 @@ public class CompetitionBuilder implements ICompetitionBuilder{
     public CompetitionBuilder(int maxCompetitors) {
         this.maxCompetitors = maxCompetitors;
         this.arenaFactory = new ArenaFactory();
-//        this.arena = (WinterArena) arenaFactory.createArena("Winter", 700, SnowSurface.CRUD, WeatherCondition.SUNNY);
         this.activeCompetitors = new ArrayList<>();
-//        this.competitor = new Skier("default-name", 12, Gender.MALE, 12, 12, Discipline.DOWNHILL, 1);
-//        activeCompetitors.add(this.competitor);
-//        for (int i=0; i<maxCompetitors - 1; i++)
-//            activeCompetitors.add(((Skier) competitor).clone());
-//
-//        this.competition.setActiveCompetitors(this.activeCompetitors);
     }
     public void buildArena(String arenaType, double length, SnowSurface surface, WeatherCondition condition) {
         this.arena = (WinterArena) arenaFactory.createArena(arenaType, length, surface, condition);
-//        this.competition.setArena(this.arena);
     }
     public void buildDiscipline(Discipline discipline) {
         ((WinterCompetition) competition).setDiscipline(discipline);
@@ -48,22 +40,21 @@ public class CompetitionBuilder implements ICompetitionBuilder{
         else if (type.equals("Ski")) {
             this.competition = new SkiCompetition(arena, maxCompetitors, null, null, null);
         }
+        this.competition.setActiveCompetitors(this.activeCompetitors);
     }
     public Competition getCompetition() { return competition; }
     public void buildDefaultCompetitors() {
         this.activeCompetitors.clear();
         if (competition.getClass().getSimpleName().equals("SkiCompetition")) {
-            int id = 1;
-            this.competitor = new Skier("default-name", 12, Gender.MALE, 12, 12, Discipline.DOWNHILL, id);
+            int cloned_id = 1;
+            this.competitor = new Skier("default-name", 12, Gender.MALE, 12, 12, Discipline.DOWNHILL, cloned_id++);
             this.activeCompetitors.add(this.competitor);
-            for (int i=0; i < maxCompetitors - 1; i++)
-                activeCompetitors.add(((Skier) competitor).clone());
+            for (int i=0; i < maxCompetitors - 1; i++) {
+                Skier temp = ((Skier) competitor).clone();
+                temp.setID(cloned_id++);
+                activeCompetitors.add(temp);
+            }
         }
-//        else if (competition.getClass().getSimpleName().equals("SnowboardCompetition")) {
-//            this.competitor = new Snowboarder("default-name", 12, Gender.MALE, 12, 12, Discipline.DOWNHILL, 1);
-//            for (int i = 0; i < maxCompetitors; i++)
-//                activeCompetitors.add(((Snowboarder) competitor).clone());
-//        }
         this.competition.setActiveCompetitors(this.activeCompetitors);
     }
 }

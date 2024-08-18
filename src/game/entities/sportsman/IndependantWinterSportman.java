@@ -2,7 +2,6 @@ package game.entities.sportsman;
 import game.arena.IArena;
 import game.competition.Competitor;
 import utilities.Point;
-
 import java.awt.*;
 import java.util.Observable;
 import java.util.Observer;
@@ -17,7 +16,6 @@ public class IndependantWinterSportman extends Observable implements Runnable {
     private final Vector<Observer> observers;
     private final int id;
     private Color color;
-    private int idDisplay;
     public IndependantWinterSportman(WinterSportsman competitor, IArena arena, int id) {
         this.competitor = competitor;
         this.arena = arena;
@@ -44,6 +42,21 @@ public class IndependantWinterSportman extends Observable implements Runnable {
             }
         }
     }
+//    @Override
+//    public void run() {
+////        this.competitor.initRace();
+////        System.out.println("id: "+id + " moves");
+//        if (!arena.isFinished(this.competitor)) {
+//            this.competitor.move(arena.getFriction());
+//            notifyObservers(this.competitor.getLocation());
+//            try {
+//                Thread.sleep(100);
+//            } catch (InterruptedException err) {
+//                System.out.println(err.getMessage());
+//            }
+//        }
+//    }
+
     public synchronized void notifyObservers(Point location) {
         for (Observer observer : observers) {
             observer.update(this ,location);
@@ -62,4 +75,7 @@ public class IndependantWinterSportman extends Observable implements Runnable {
         return "IWS - " + this.competitor.getName();
     }
     public Competitor getCompetitor() { return this.competitor; }
+    public boolean isFinished() {
+        return this.arena.isFinished(this.competitor);
+    }
 }
