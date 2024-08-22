@@ -10,9 +10,9 @@ import java.util.Vector;
  * @authors Ehud Vaknin 209479088, Moshe Bercovich 206676850
  * Class IndependantWinterSportman - a class that contains competitor and arena for code-reusability and running in thread
  */
-public class IndependantWinterSportman extends Observable implements Runnable {
+public class IndependantWinterSportman extends Observable implements Runnable, IWinrerSportman {
     private final IArena arena;
-    private final WinterSportsman competitor;
+    private  WinterSportsman competitor;
     private final Vector<Observer> observers;
     private final int id;
     private Color color;
@@ -71,10 +71,13 @@ public class IndependantWinterSportman extends Observable implements Runnable {
     public Vector<Observer> getObservers() { return this.observers; }
     public int getID() { return id; }
     public void setColor(Color color) { this.color = color; }
+    public Color getColor() { return color; }
     public String toString(){
         return "IWS - " + this.competitor.getName();
     }
     public Competitor getCompetitor() { return this.competitor; }
+    public IArena getArena() { return arena; }
+
     public boolean isFinished() {
         return this.arena.isFinished(this.competitor);
     }
