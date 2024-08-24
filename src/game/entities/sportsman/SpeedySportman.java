@@ -4,9 +4,11 @@ import game.entities.MobileEntity;
 
 public class SpeedySportman extends WSDecorator {
     private double acceleration;
-    public SpeedySportman (IndependantWinterSportman iws, double acceleration) {
+
+    public SpeedySportman (IWinterSportman iws, double acceleration) {
         super(iws);
-        ((MobileEntity)iws.getCompetitor()).setAcceleration(acceleration);
+        IndependantWinterSportman IWS1 = (IndependantWinterSportman) iws;
+        ((MobileEntity)IWS1.getCompetitor()).setAcceleration(acceleration);
         this.acceleration = acceleration;
     }
     public void setAcceleration (double acceleration) {

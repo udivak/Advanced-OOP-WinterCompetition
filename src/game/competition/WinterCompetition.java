@@ -9,7 +9,7 @@ import game.enums.League;
  * @author Ehud Vaknin 209479088, Moshe Bercovich 206676850
  * Class WinterCompetition - extends Competition define a winter sport competition
  */
-public abstract class WinterCompetition extends Competition implements CompetitionPlan{
+public abstract class WinterCompetition extends Competition implements CompetitionPlan {
     private Discipline discipline;
     private League league;
     private Gender gender;

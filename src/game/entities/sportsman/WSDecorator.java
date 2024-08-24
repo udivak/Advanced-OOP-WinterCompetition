@@ -1,16 +1,21 @@
 package game.entities.sportsman;
+/**
+ * @author Ehud Vaknin 209479088, Moshe Bercovich 206676850
+ * Class WSDecorator - Decorator DP for WinterSportman using IWS
+ */
+public abstract class WSDecorator implements IWinterSportman, Runnable {
+    protected IWinterSportman iws;
 
-public abstract class WSDecorator implements Runnable{
-    private IndependantWinterSportman iws;
-    public WSDecorator(IndependantWinterSportman iws){
+    public WSDecorator(IWinterSportman iws){
         this.iws = iws;
     }
 
-    public IndependantWinterSportman getIWS() { return iws; }
+    public IndependantWinterSportman getIWS() { return (IndependantWinterSportman) iws; }
 
     public void run() {
-        this.iws.getCompetitor().initRace();
-        while (!iws.getArena().isFinished(this.iws.getCompetitor())) {
+        IndependantWinterSportman iws = (IndependantWinterSportman) this.iws;
+        iws.getCompetitor().initRace();
+        while (!iws.getArena().isFinished(iws.getCompetitor())) {
             iws.getCompetitor().move(iws.getArena().getFriction());
             iws.notifyObservers(iws.getCompetitor().getLocation());
             try {

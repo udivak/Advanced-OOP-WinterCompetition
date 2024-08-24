@@ -16,6 +16,7 @@ public class CompetitionBuilder implements ICompetitionBuilder{
     private ArrayList<Competitor> activeCompetitors;
     private Competitor competitor;
     private ArenaFactory arenaFactory;
+
     public CompetitionBuilder(int maxCompetitors) {
         this.maxCompetitors = maxCompetitors;
         this.arenaFactory = new ArenaFactory();
