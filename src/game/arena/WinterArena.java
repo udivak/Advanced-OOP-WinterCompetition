@@ -6,7 +6,7 @@ import game.enums.WeatherCondition;
  * @author Ehud Vaknin 209479088, Moshe Bercovich 206676850
  * Class WinterArena - implements IArena to define a winter competition arena
  */
-public class WinterArena implements IArena{
+public class WinterArena implements IArena {
     private double length;
     private SnowSurface surface;
     private WeatherCondition condition;
