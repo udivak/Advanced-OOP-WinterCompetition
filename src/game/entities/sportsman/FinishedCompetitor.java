@@ -1,6 +1,6 @@
 package game.entities.sportsman;
 
-public class ActiveCompetitor implements CompetitorState {
+public class FinishedCompetitor implements CompetitorState {
 
     @Override
     public CompetitorState getState() {
@@ -8,6 +8,6 @@ public class ActiveCompetitor implements CompetitorState {
     }
 
     public String toString() {
-        return "Active";
+        return "Finished";
     }
 }

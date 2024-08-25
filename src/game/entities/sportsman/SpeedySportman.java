@@ -11,7 +11,14 @@ public class SpeedySportman extends WSDecorator {
         ((MobileEntity)IWS1.getCompetitor()).setAcceleration(acceleration);
         this.acceleration = acceleration;
     }
-    public void setAcceleration (double acceleration) {
+    public SpeedySportman (WSDecorator iws, double acceleration) {
+        super(iws.getIWS());
+        IndependantWinterSportman IWS1 = iws.getIWS();
+        ((MobileEntity) IWS1.getCompetitor()).setAcceleration(acceleration);
+        this.acceleration = acceleration;
+    }
+
+        public void setAcceleration (double acceleration) {
         ((MobileEntity)this.getIWS().getCompetitor()).setAcceleration(acceleration);
     }
     public double getAcceleration() {

@@ -6,4 +6,8 @@ public class DisabledCompetitor implements CompetitorState {
     public CompetitorState getState() {
         return this;
     }
+
+    public String toString() {
+        return "Disabled";
+    }
 }

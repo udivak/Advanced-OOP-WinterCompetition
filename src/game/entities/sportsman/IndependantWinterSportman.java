@@ -18,6 +18,7 @@ public class IndependantWinterSportman extends Observable implements Runnable, I
     private final int id;
     private Color color;
     private CompetitorState state;
+    private int status;
 
     public IndependantWinterSportman(WinterSportsman competitor, IArena arena, int id) {
         this.competitor = competitor;
@@ -25,7 +26,9 @@ public class IndependantWinterSportman extends Observable implements Runnable, I
         this.observers = new Vector<>();
         this.id = id;
         this.color = null;
-        state = new ActiveCompetitor();
+        this.status = 0;
+        this.state = new ActiveCompetitor();
+
     }
     public IndependantWinterSportman(WinterSportsman competitor, IArena arena, int id, Color color) {
         this.competitor = competitor;
@@ -35,20 +38,31 @@ public class IndependantWinterSportman extends Observable implements Runnable, I
         this.color = color;
     }
     public void run() {
-        double placeState = 0;
-        if (!(state instanceof ActiveCompetitor)) {
+        double injuryLocation = 0;
+        if (status == 1) {
+            //state = new InjuredCompetitor();
             Random random = new Random();
-            placeState = random.nextDouble(1, arena.getLength());
+            injuryLocation = random.nextDouble(1, arena.getLength());
         }
+        else if (status ==2)
+            state = new DisabledCompetitor();
+
+        if (state instanceof DisabledCompetitor)
+            return;
 
         this.competitor.initRace();
+
         while (!arena.isFinished(this.competitor)) {
             this.competitor.move(arena.getFriction());
-            if (placeState != 0)
-                if (competitor.getLocation().getX() >= placeState) {
+            if (injuryLocation != 0) {
+                if (competitor.getLocation().getX() >= injuryLocation) {
+                    state = new InjuredCompetitor();
                     notifyObservers(state);
                     break;
                 }
+            }
+            if (arena.isFinished(competitor))
+                state = new FinishedCompetitor();
 
             notifyObservers(this.competitor.getLocation());
             try {
@@ -59,6 +73,7 @@ public class IndependantWinterSportman extends Observable implements Runnable, I
         }
     }
     public void setState(CompetitorState newState) { state = newState; }
+    public void setStatus(int status){ this.status = status; }
     public IndependantWinterSportman getIWS() {
         return this;
     }
@@ -97,17 +112,29 @@ public class IndependantWinterSportman extends Observable implements Runnable, I
        }
     }
     public void setObserver (Observer observer) { observers.add(observer); }
+
     public Vector<Observer> getObservers() { return this.observers; }
+
     public int getID() { return id; }
+
     public void setColor(Color color) { this.color = color; }
+
     public Color getColor() { return color; }
+
     public String toString(){
-        return "Name : " + competitor.getName() + ",  Age : " + competitor.getAge() + ",  Acceleration : " + competitor.getAcceleration() + ",  MaxSpeed : " + competitor.getMaxSpeed();
+        return "Name : " + competitor.getName() + ",  Age : " + competitor.getAge() + ",  Acceleration : " +
+                competitor.getAcceleration() + ",  MaxSpeed : " + competitor.getMaxSpeed();
     }
     public Competitor getCompetitor() { return this.competitor; }
+
     public IArena getArena() { return arena; }
 
     public boolean isFinished() {
         return this.arena.isFinished(this.competitor);
     }
+
+    public CompetitorState getState() {
+        return state;
+    }
+
 }

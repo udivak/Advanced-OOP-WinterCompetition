@@ -1,4 +1,7 @@
 package game.entities.sportsman;
+
+import game.competition.Competitor;
+
 /**
  * @author Ehud Vaknin 209479088, Moshe Bercovich 206676850
  * Class WSDecorator - Decorator DP for WinterSportman using IWS
@@ -25,4 +28,12 @@ public abstract class WSDecorator implements IWinterSportman, Runnable {
             }
         }
     }
+
+    public String toString(){
+        WinterSportsman competitor = (WinterSportsman) getIWS().getCompetitor();
+        return "Name : " + competitor.getName() + ",  Age : " + competitor.getAge() + ",  Acceleration : " +
+                competitor.getAcceleration() + ",  MaxSpeed : " + competitor.getMaxSpeed();
+    }
+
+    public Competitor getCompetitor(){ return iws.getCompetitor(); }
 }

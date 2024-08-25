@@ -66,6 +66,8 @@ public class CompetitionGUI extends JFrame implements Observer {
     private JTextField acceleration_txtfield;
     private JTextField maxSpeed_txtfield;
     private ArrayList<IWinterSportman> iwsList;
+    private long competitionStartTime;
+    private long injurySystemTime;
 
     public CompetitionGUI() {
 
@@ -193,10 +195,10 @@ public class CompetitionGUI extends JFrame implements Observer {
     private ArrayList<Integer> destiny() {
         ArrayList<Integer> competitorArray = new ArrayList<>();
         Random random = new Random();
-        int firstInt = random.nextInt(maxCompetitors);
+        int firstInt = random.nextInt(winterCompetition.getActiveCompetitors().size());
         int secondInt;
         do {
-            secondInt = random.nextInt(maxCompetitors);
+            secondInt = random.nextInt(winterCompetition.getActiveCompetitors().size());
         } while (secondInt == firstInt);
 
         competitorArray.add(firstInt);
@@ -356,11 +358,12 @@ public class CompetitionGUI extends JFrame implements Observer {
         IndependantWinterSportman iws = new IndependantWinterSportman(competitor, winterArena, id);
         iws.setObserver(CompetitionGUI.this.winterCompetition);
         iws.setObserver(CompetitionGUI.this);
-        iwsList.add(iws);
+//        iwsList.add(iws);
         ColoredSportman coloredIWS = new ColoredSportman(iws, color);
-
+        iwsList.add(coloredIWS);
 //        Thread competitorThread = new Thread(coloredIWS);
 //        competitorsVector.add(competitorThread);
+
         if (winterCompetition.getActiveCompetitors().size() < winterCompetition.getMaxCompetitors())
             winterCompetition.addCompetitor(competitor);
         String competitor_icon_path;
@@ -373,11 +376,12 @@ public class CompetitionGUI extends JFrame implements Observer {
         IndependantWinterSportman iws = new IndependantWinterSportman(competitor, winterArena, id);
         iws.setObserver(CompetitionGUI.this.winterCompetition);
         iws.setObserver(CompetitionGUI.this);
-        iwsList.add(iws);
+//        iwsList.add(iws);
         SpeedySportman speedyIWS = new SpeedySportman(iws, acceleration);
-
+        iwsList.add(speedyIWS);
 //        Thread competitorThread = new Thread(speedyIWS);
 //        competitorsVector.add(competitorThread);
+
         if (winterCompetition.getActiveCompetitors().size() < winterCompetition.getMaxCompetitors())
             winterCompetition.addCompetitor(competitor);
         String competitor_icon_path;
@@ -505,11 +509,18 @@ public class CompetitionGUI extends JFrame implements Observer {
                     cancelBtn.addActionListener(e1 -> {
                         activeCompetitorsDialog.dispose();      // Close the dialog
                     });
-                    JComboBox<IndependantWinterSportman> comboBox = getCompetitorsComboBox();
+                    JComboBox<IWinterSportman> comboBox = getCompetitorsComboBox();
 
                     cloneBtn.addActionListener(e12 -> {
-                        WinterSportsman selectedCompetitor = (WinterSportsman) ((IndependantWinterSportman) comboBox.getSelectedItem()).getCompetitor();
-                        competitor = selectedCompetitor.clone();
+                        Object selectedCompetitor = comboBox.getSelectedItem();
+                        WinterSportsman cmp;
+                        if (selectedCompetitor instanceof WSDecorator) {
+                            cmp = (WinterSportsman) ((WSDecorator) selectedCompetitor).getIWS().getCompetitor();
+                        }
+                        else {
+                            cmp = (WinterSportsman) ((IndependantWinterSportman) selectedCompetitor).getCompetitor();
+                        }
+                        competitor = cmp.clone();
                         // now open dialog for modifications
                         JDialog modificationsDialog = new JDialog();
                         modificationsDialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
@@ -570,26 +581,75 @@ public class CompetitionGUI extends JFrame implements Observer {
         this.decorateCompetitor_btn = new JButton("Decorate Competitor");
         decorateCompetitor_btn.addActionListener(l -> {
             JDialog activeCompetitorsDialog = new JDialog();
-            JComboBox<IndependantWinterSportman> comboBox = getCompetitorsComboBox();
+            JComboBox<IWinterSportman> comboBox = getCompetitorsComboBox();
 
             JPanel decoratorTypesPanel = new JPanel(new FlowLayout());
 
             JButton speedy_btn = new JButton("Speedy");
             speedy_btn.addActionListener(e23 -> {
-                IWinterSportman selectedCompetitor = (IndependantWinterSportman) comboBox.getSelectedItem();
+                IWinterSportman selectedCompetitor = (IWinterSportman) comboBox.getSelectedItem();
                 String newAccelerationStr;
-                double newAcceleration = 0;
+                Double newAcceleration = 0.0;
                 do {
-                    newAccelerationStr = JOptionPane.showInputDialog(CompetitionGUI.this, "Enter Acceleration for the competitor:", "New Acceleration", JOptionPane.QUESTION_MESSAGE);
+                    // Prompt the user for input
+                    newAccelerationStr = JOptionPane.showInputDialog(CompetitionGUI.this,
+                            "Enter Acceleration for the competitor:", "New Acceleration", JOptionPane.QUESTION_MESSAGE);
+
+                    // Check if the user pressed Cancel or closed the dialog
+                    if (newAccelerationStr == null) {
+                        int confirm = JOptionPane.showConfirmDialog(CompetitionGUI.this,
+                                "Are you sure you want to cancel?", "Cancel Confirmation", JOptionPane.YES_NO_OPTION,
+                                JOptionPane.WARNING_MESSAGE);
+
+                        if (confirm == JOptionPane.YES_OPTION) {
+                            JOptionPane.showMessageDialog(CompetitionGUI.this, "Decoration canceled.",
+                                    "Canceled", JOptionPane.INFORMATION_MESSAGE);
+                            return;     // Exit the loop if the user confirms cancellation
+
+                        } else {
+                            continue;  // Continue the loop if the user decides not to cancel
+                        }
+                    }
+
+                    // Check if the input is empty
+                    if (newAccelerationStr.isEmpty()) {
+                        JOptionPane.showMessageDialog(
+                                CompetitionGUI.this,
+                                "Input cannot be empty.",
+                                "Error",
+                                JOptionPane.ERROR_MESSAGE
+                        );
+                        continue;  // Skip to the next iteration of the loop
+                    }
+
                     try {
+                        // Try to parse the input to a double
                         newAcceleration = Double.parseDouble(newAccelerationStr);
-                        JOptionPane.showMessageDialog(this, "Acceleration updated successfully!", "Success", JOptionPane.INFORMATION_MESSAGE);
+                        JOptionPane.showMessageDialog(
+                                CompetitionGUI.this,
+                                "Acceleration updated successfully!",
+                                "Success",
+                                JOptionPane.INFORMATION_MESSAGE
+                        );
+                        break;  // Exit the loop if the input is valid
                     } catch (NumberFormatException ex) {
-                        JOptionPane.showMessageDialog(this, "Invalid input. Please enter a valid number.", "Error", JOptionPane.ERROR_MESSAGE);
-                    } catch (Exception ignored) {}
-                } while (newAccelerationStr == null && newAccelerationStr.isEmpty());
-                int index = winterCompetition.getActiveCompetitors().indexOf(((IndependantWinterSportman)comboBox.getSelectedItem()).getCompetitor());
-                selectedCompetitor = new SpeedySportman(selectedCompetitor, newAcceleration);
+                        // Handle invalid number format
+                        JOptionPane.showMessageDialog(
+                                CompetitionGUI.this,
+                                "Invalid input. Please enter a valid number.",
+                                "Error",
+                                JOptionPane.ERROR_MESSAGE
+                        );
+                    }
+                } while (true);  // Loop until a valid input is provided
+
+                int index = winterCompetition.getActiveCompetitors().indexOf(((IWinterSportman)comboBox.getSelectedItem()).getIWS().getCompetitor());
+                if (selectedCompetitor instanceof WSDecorator)
+                {
+                    selectedCompetitor = new SpeedySportman((WSDecorator) selectedCompetitor, newAcceleration);
+                }
+                else
+                    selectedCompetitor = new SpeedySportman(selectedCompetitor, newAcceleration);
                 winterCompetition.getActiveCompetitors().set(index, selectedCompetitor.getIWS().getCompetitor());
                 JOptionPane.showMessageDialog(null, "Decoration Succeed.", "Success", JOptionPane.INFORMATION_MESSAGE);
                 activeCompetitorsDialog.dispose();
@@ -597,10 +657,26 @@ public class CompetitionGUI extends JFrame implements Observer {
 
             JButton colored_btn = new JButton("Colored");
             colored_btn.addActionListener(e21 -> {
-                IWinterSportman selectedCompetitor = (IndependantWinterSportman) comboBox.getSelectedItem();
+                IWinterSportman selectedCompetitor = (IWinterSportman) comboBox.getSelectedItem();
                 Color chosenColor = JColorChooser.showDialog(null, "Choose a Color", Color.WHITE);
-                int index = winterCompetition.getActiveCompetitors().indexOf(((IndependantWinterSportman)comboBox.getSelectedItem()).getCompetitor());
-                selectedCompetitor = new ColoredSportman(selectedCompetitor, chosenColor);
+                if (chosenColor == null) {
+                    int confirm = JOptionPane.showConfirmDialog(CompetitionGUI.this,
+                            "Are you sure you want to cancel?", "Cancel Confirmation", JOptionPane.YES_NO_OPTION,
+                            JOptionPane.WARNING_MESSAGE);
+
+                    if (confirm == JOptionPane.YES_OPTION) {
+                        JOptionPane.showMessageDialog(CompetitionGUI.this, "Decoration canceled.",
+                                "Canceled", JOptionPane.INFORMATION_MESSAGE);
+                        return;     // Exit the loop if the user confirms cancellation
+                    }
+                }
+                int index = winterCompetition.getActiveCompetitors().indexOf(((IWinterSportman)comboBox.getSelectedItem()).getIWS().getCompetitor());
+                if (selectedCompetitor instanceof WSDecorator)
+                {
+                    selectedCompetitor = new ColoredSportman((WSDecorator) selectedCompetitor, chosenColor);
+                }
+                else
+                    selectedCompetitor = new ColoredSportman(selectedCompetitor, chosenColor);
                 winterCompetition.getActiveCompetitors().set(index, selectedCompetitor.getIWS().getCompetitor());
                 String competitor_icon_path;
                 competitor_icon_path = winterCompetition.getGender() == Gender.MALE ? "/icons/" + competition_type_str + "Male.png" :
@@ -731,8 +807,6 @@ public class CompetitionGUI extends JFrame implements Observer {
         iconPanel.repaint();
     }
 
-
-
     private boolean isAddCompetitorFormEmpty() {
         String name = name_txtfield.getText();
         String age = age_txtfield.getText();
@@ -741,10 +815,10 @@ public class CompetitionGUI extends JFrame implements Observer {
         return name.isEmpty() || age.isEmpty() || acc.isEmpty() || max.isEmpty();
     }
 
-    private JComboBox<IndependantWinterSportman> getCompetitorsComboBox() {
-        JComboBox<IndependantWinterSportman> comboBox = new JComboBox<>();
+    private JComboBox<IWinterSportman> getCompetitorsComboBox() {
+        JComboBox<IWinterSportman> comboBox = new JComboBox<>();
         for (IWinterSportman iws : iwsList) {
-            comboBox.addItem((IndependantWinterSportman) iws);
+            comboBox.addItem(iws);
         }
         return comboBox;
     }
@@ -918,6 +992,7 @@ public class CompetitionGUI extends JFrame implements Observer {
 
     private void StartCompetitionEvent() {
         startCompetition_btn.addActionListener(e -> {
+
             if (CompetitionGUI.this.winterCompetition == null || CompetitionGUI.this.winterCompetition.getActiveCompetitors().isEmpty())
                 JOptionPane.showMessageDialog(null, "Please build Competition and add new Competitors before starting the Competition.",
                         "Error", JOptionPane.ERROR_MESSAGE);
@@ -941,20 +1016,21 @@ public class CompetitionGUI extends JFrame implements Observer {
 //                    executer.shutdown();
                     ArrayList<Integer> statesIndex = destiny();
                     int first = statesIndex.getFirst();
-                    IndependantWinterSportman modifiedIWS = ((IndependantWinterSportman) iwsList.get(first));
-                    modifiedIWS.setState(new InjuredCompetitor());
+                    IndependantWinterSportman modifiedIWS = iwsList.get(first).getIWS();
+                    modifiedIWS.setStatus(1);
                     iwsList.set(first, modifiedIWS);
 
                     int last = statesIndex.getLast();
-                    modifiedIWS = ((IndependantWinterSportman) iwsList.get(last));
-                    modifiedIWS.setState(new DisabledCompetitor());
+                    modifiedIWS = iwsList.get(last).getIWS();
+                    modifiedIWS.setStatus(2);
                     iwsList.set(last, modifiedIWS);
 
                     for (IWinterSportman iws : iwsList) {
-                        Thread iwsThread = new Thread((IndependantWinterSportman) iws);
+                        Thread iwsThread = new Thread(iws.getIWS());
                         competitorsVector.add(iwsThread);
                     }
 
+                    competitionStartTime = System.currentTimeMillis();
                     for (Thread thread : competitorsVector) {                                    // WITHOUT THREAD POOL
                         thread.start();
                     }
@@ -968,17 +1044,18 @@ public class CompetitionGUI extends JFrame implements Observer {
 
     @Override
     public synchronized void update(Observable competitor, Object arg) {
+        int id = ((IndependantWinterSportman) competitor).getID();
+        String competitorName = ((IndependantWinterSportman) competitor).getCompetitor().getName();
         if (arg instanceof CompetitorState) {
             if (arg instanceof InjuredCompetitor) {
-
-            }
-            else {                                  // Disabled
-
-            }
-        }
-        else {
+                injurySystemTime = System.currentTimeMillis();
+                long timeUntilInjury = injurySystemTime - competitionStartTime;
+                updateInfoTable();
+                JOptionPane.showMessageDialog(null, String.format("%s got Injured at %d millis.", competitorName, timeUntilInjury), "Injured Competitor", JOptionPane.WARNING_MESSAGE);
+            } else                                   // Disabled
+                JOptionPane.showMessageDialog(null, String.format("%s is Disabled", competitorName), "Disabled Competitor", JOptionPane.WARNING_MESSAGE);
+        } else {
             Point location = (Point) arg;
-            int id = ((IndependantWinterSportman) competitor).getID();
             JLabel competitorIcon = iconCompetitors.get(id);
             competitorIcon.setBounds(competitorIcon.getX(), (int) location.getX(), competitorIcon.getWidth(), competitorIcon.getHeight());
             imgContainer.revalidate();
@@ -991,23 +1068,23 @@ public class CompetitionGUI extends JFrame implements Observer {
                 } catch (Exception ignored) {
                 }
             }
-            if (!isCompetitionFinished && iconCompetitors.size() == winterCompetition.getFinishedCompetitors().size()) {
-                isCompetitionFinished = true;  // Set the flag to prevent further execution
-                JOptionPane.showMessageDialog(null, "The Competition has finished.",
-                        "Competition Finished", JOptionPane.INFORMATION_MESSAGE);
-                setEnabledButtons(!CompetitionGUI.this.competitionStatus);
-            }
         }
-    }
+        if (isCompetitionFinished()) {
+            isCompetitionFinished = true;  // Set the flag to prevent further execution
+            JOptionPane.showMessageDialog(null, "The Competition has finished.",
+                    "Competition Finished", JOptionPane.INFORMATION_MESSAGE);
+            setEnabledButtons(!CompetitionGUI.this.competitionStatus);
+        }
 
-    //finish rendering states info
+    }
 
     private void updateInfoTable() {
         SwingUtilities.invokeLater(() -> {
             tableModel.setRowCount(0);
             try {
                 int index = 1;
-                for (Competitor cmp : winterCompetition.getActiveCompetitors()) {
+                for (IWinterSportman iws : iwsList) {
+                    Competitor cmp = iws.getIWS().getCompetitor();
                     if (cmp instanceof WinterSportsman) {
                         tableModel.addRow(new Object[]{
                                 index++,
@@ -1015,22 +1092,22 @@ public class CompetitionGUI extends JFrame implements Observer {
                                 ((WinterSportsman) cmp).getSpeed(),
                                 ((WinterSportsman) cmp).getLocation().getX(),
                                 winterArena.isFinished(cmp),
-                                "--State--"
+                                ((IndependantWinterSportman) iws).getState().toString()
                         });
                     }
                 }
-                for (Competitor cmp : winterCompetition.getFinishedCompetitors()) {
-                    if (cmp instanceof WinterSportsman) {
-                        tableModel.addRow(new Object[]{
-                                index++,
-                                ((WinterSportsman) cmp).getName(),
-                                ((WinterSportsman) cmp).getSpeed(),
-                                ((WinterSportsman) cmp).getLocation().getX(),
-                                winterArena.isFinished(cmp),
-                                "--State--"
-                        });
-                    }
-                }
+//                for (Competitor cmp : winterCompetition.getFinishedCompetitors()) {
+//                    if (cmp instanceof WinterSportsman) {
+//                        tableModel.addRow(new Object[]{
+//                                index++,
+//                                ((WinterSportsman) cmp).getName(),
+//                                ((WinterSportsman) cmp).getSpeed(),
+//                                ((WinterSportsman) cmp).getLocation().getX(),
+//                                winterArena.isFinished(cmp),
+//                                "--State--"
+//                        });
+//                    }
+//                }
             } catch (NullPointerException err) {
                 JOptionPane.showMessageDialog(null, "Please build Arena, Competition and add Competitors to view info.", "Error", JOptionPane.ERROR_MESSAGE);
             }
@@ -1044,5 +1121,18 @@ public class CompetitionGUI extends JFrame implements Observer {
         this.startCompetition_btn.setEnabled(!status);
         this.cloneCompetitor_btn.setEnabled(!status);
         this.defaultCompetition_btn.setEnabled(!status);
+    }
+
+    private boolean isCompetitionFinished() {
+        int count_finished = 0;
+        int count_injured = 0;
+        for (IWinterSportman iws : iwsList)
+        {
+            if (iws.getIWS().isFinished())
+                count_finished++;
+            if(Objects.equals(iws.getIWS().getState().toString(), "Injured"))
+                count_injured++;
+        }
+        return count_finished == (iwsList.size()-2) && count_injured ==1;
     }
 }

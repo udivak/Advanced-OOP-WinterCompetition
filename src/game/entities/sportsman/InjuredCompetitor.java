@@ -6,4 +6,8 @@ public class InjuredCompetitor implements  CompetitorState {
     public CompetitorState getState() {
         return this;
     }
+
+    public String toString() {
+        return "Injured";
+    }
 }
