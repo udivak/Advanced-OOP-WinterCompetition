@@ -58,7 +58,7 @@ public class IndependantWinterSportman extends Observable implements Runnable, I
                     notifyObservers(state);
                     flag = true;
                     try {
-                        Thread.sleep(1200);
+                        Thread.sleep(800);
                     } catch (Exception ignored) {}
 
                     makeDestiny();
@@ -148,7 +148,7 @@ public class IndependantWinterSportman extends Observable implements Runnable, I
 
     public void makeDestiny(){
         Random random = new Random();
-        if (!random.nextBoolean())
+        if (random.nextBoolean())
             setState(new ActiveCompetitor());
     }
 }

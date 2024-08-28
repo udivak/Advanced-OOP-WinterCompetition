@@ -27,7 +27,6 @@ public class CompetitionGUI extends JFrame implements Observer {
     private final JLayeredPane imgContainer;      //Arena image
     private final JButton startCompetition_btn;
     private final JButton showInfo_btn;
-    private JTextField threadCountTextField;
     private JButton buildArena_btn;
     private JButton createCompetition_btn;
     private JButton defaultCompetition_btn;
@@ -99,12 +98,8 @@ public class CompetitionGUI extends JFrame implements Observer {
         rightPanel.add(createCompetitionPanel);
         rightPanel.add(addCompetitorPanel);
 
-        JPanel bottomPanel = new JPanel(new GridLayout(2, 1));
-        JLabel threadCountLabel = new JLabel("Thread Count");
-        threadCountTextField = new JTextField();
-        bottomPanel.add(threadCountLabel);
-        bottomPanel.add(threadCountTextField);
-        startCompetition_btn = new JButton("Start competition");
+        JPanel bottomPanel = new JPanel(new GridLayout(1, 2));
+        startCompetition_btn = new JButton("Start Competition");
         StartCompetitionEvent();                                    // sets Start Competition button functionality
         bottomPanel.add(startCompetition_btn);
 
@@ -1002,7 +997,6 @@ public class CompetitionGUI extends JFrame implements Observer {
 
     private void StartCompetitionEvent() {
         startCompetition_btn.addActionListener(e -> {
-
             if (CompetitionGUI.this.winterCompetition == null || CompetitionGUI.this.winterCompetition.getActiveCompetitors().isEmpty())
                 JOptionPane.showMessageDialog(null, "Please build Competition and add new Competitors before starting the Competition.",
                         "Error", JOptionPane.ERROR_MESSAGE);
@@ -1010,20 +1004,7 @@ public class CompetitionGUI extends JFrame implements Observer {
                 if (!CompetitionGUI.this.competitionStatus) {
                     CompetitionGUI.this.competitionStatus = true;
                     setEnabledButtons(CompetitionGUI.this.competitionStatus);
-//                    try {
-//                        int threadCount = Integer.parseInt(this.threadCountTextField.getText());
-//                        this.executer = Executors.newFixedThreadPool(threadCount);
-//                    } catch (NumberFormatException err) {
-//                        JOptionPane.showMessageDialog(null, "Thread Count must be a number.",
-//                        "Error", JOptionPane.ERROR_MESSAGE);
-//                    }
-//                    while (!threadPool.isEmpty()) {
-//                        IndependantWinterSportman temp = threadPool.poll();
-//                        executer.execute(temp::run);
-//                        if (!temp.isFinished())
-//                            threadPool.add(temp);
-//                    }
-//                    executer.shutdown();
+
                     ArrayList<Integer> statesIndex = destiny();
                     int first = statesIndex.getFirst();
                     IndependantWinterSportman modifiedIWS = iwsList.get(first).getIWS();
@@ -1041,7 +1022,7 @@ public class CompetitionGUI extends JFrame implements Observer {
                     }
 
                     competitionStartTime = System.currentTimeMillis();
-                    for (Thread thread : competitorsVector) {                                    // WITHOUT THREAD POOL
+                    for (Thread thread : competitorsVector) {                                  // WITHOUT THREAD POOL
                         thread.start();
                     }
                     isCompetitionFinished = false;
