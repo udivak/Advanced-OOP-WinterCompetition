@@ -48,10 +48,11 @@ public class CompetitionBuilder implements ICompetitionBuilder{
         this.activeCompetitors.clear();
         if (competition.getClass().getSimpleName().equals("SkiCompetition")) {
             int cloned_id = 1;
-            this.competitor = new Skier("default-name", 12, Gender.MALE, 12, 12, Discipline.DOWNHILL, cloned_id++);
+            this.competitor = new Skier("default-name"+cloned_id, 12, Gender.MALE, 12, 12, Discipline.DOWNHILL, cloned_id++);
             this.activeCompetitors.add(this.competitor);
             for (int i=0; i < maxCompetitors - 1; i++) {
                 Skier temp = ((Skier) competitor).clone();
+                temp.setName("default-name"+cloned_id);
                 temp.setID(cloned_id++);
                 activeCompetitors.add(temp);
             }
