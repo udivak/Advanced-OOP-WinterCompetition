@@ -1,5 +1,7 @@
 package game.entities.sportsman;
 
+import java.util.Random;
+
 public class DisabledCompetitor implements CompetitorState {
 
     @Override
@@ -10,4 +12,5 @@ public class DisabledCompetitor implements CompetitorState {
     public String toString() {
         return "Disabled";
     }
+
 }

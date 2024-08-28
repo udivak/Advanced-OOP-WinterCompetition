@@ -44,21 +44,28 @@ public class IndependantWinterSportman extends Observable implements Runnable, I
             Random random = new Random();
             injuryLocation = random.nextDouble(1, arena.getLength());
         }
-        else if (status ==2)
+        else if (status ==2) {
             state = new DisabledCompetitor();
-
-        if (state instanceof DisabledCompetitor)
             return;
-
+        }
         this.competitor.initRace();
-
+        boolean flag = false;
         while (!arena.isFinished(this.competitor)) {
             this.competitor.move(arena.getFriction());
             if (injuryLocation != 0) {
-                if (competitor.getLocation().getX() >= injuryLocation) {
+                if ((competitor.getLocation().getX() >= injuryLocation) && state instanceof ActiveCompetitor && !flag) {
                     state = new InjuredCompetitor();
                     notifyObservers(state);
-                    break;
+                    flag = true;
+                    try {
+                        Thread.sleep(1200);
+                    } catch (Exception ignored) {}
+
+                    makeDestiny();
+                    if (state instanceof ActiveCompetitor)
+                        notifyObservers(state);
+                    else
+                        break;
                 }
             }
             if (arena.isFinished(competitor))
@@ -73,7 +80,9 @@ public class IndependantWinterSportman extends Observable implements Runnable, I
         }
     }
     public void setState(CompetitorState newState) { state = newState; }
+
     public void setStatus(int status){ this.status = status; }
+
     public IndependantWinterSportman getIWS() {
         return this;
     }
@@ -137,4 +146,9 @@ public class IndependantWinterSportman extends Observable implements Runnable, I
         return state;
     }
 
+    public void makeDestiny(){
+        Random random = new Random();
+        if (!random.nextBoolean())
+            setState(new ActiveCompetitor());
+    }
 }

@@ -13,7 +13,9 @@ public abstract class WSDecorator implements IWinterSportman, Runnable {
         this.iws = iws;
     }
 
-    public IndependantWinterSportman getIWS() { return (IndependantWinterSportman) iws; }
+    public IndependantWinterSportman getIWS() {
+        return (IndependantWinterSportman) iws;
+    }
 
     public void run() {
         IndependantWinterSportman iws = (IndependantWinterSportman) this.iws;
