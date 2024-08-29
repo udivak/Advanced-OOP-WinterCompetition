@@ -1006,12 +1006,12 @@ public class CompetitionGUI extends JFrame implements Observer {
                     setEnabledButtons(CompetitionGUI.this.competitionStatus);
 
                     ArrayList<Integer> statesIndex = destiny();
-                    int first = statesIndex.getFirst();
+                    int first = statesIndex.get(0);
                     IndependantWinterSportman modifiedIWS = iwsList.get(first).getIWS();
                     modifiedIWS.setStatus(1);
                     iwsList.set(first, modifiedIWS);
 
-                    int last = statesIndex.getLast();
+                    int last = statesIndex.get(1);
                     modifiedIWS = iwsList.get(last).getIWS();
                     modifiedIWS.setStatus(2);
                     iwsList.set(last, modifiedIWS);
